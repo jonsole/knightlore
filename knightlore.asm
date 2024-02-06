@@ -5855,7 +5855,7 @@ upd_92_to_95:
 				ld      a, (all_objs_in_cauldron)
 				and     a
 				jr      NZ, loc_C349
-				jp      init_death_sparkles
+				;jp      init_death_sparkles
 ; ---------------------------------------------------------------------------
 
 loc_C349:
@@ -6836,7 +6836,7 @@ upd_player_bottom:                                              ; dead?
 				and     a
 				jr      NZ, loc_C83E
 				set     6, (ix+0x2D)                             ; set dead top half
-				jp      init_death_sparkles
+				;jp      init_death_sparkles
 ; ---------------------------------------------------------------------------
 
 loc_C83E:                                                       ; returns to caller if transforming
@@ -7877,7 +7877,7 @@ upd_player_top:
 				and     a
 				jr      NZ, loc_CDEF
 				bit     6, (ix+13)
-				jp      NZ, init_death_sparkles
+				;jp      NZ, init_death_sparkles
 
 loc_CDEF:
 				push    ix
@@ -8489,7 +8489,8 @@ init_start_location:
 				ld      (byte_D191), a                          ; plyr_spr_2_scratchpad (byte 16)
 				ld      a, (seed_1)
 				and     3                                      ; random 0-3
-				ld      l, a
+				;ld      l, a
+				ld		l, 0
 				ld      h, 0
 				ld      bc, start_locations
 				add     hl, bc                                  ; offset to random entry
@@ -9385,7 +9386,7 @@ loc_D653:
 ; ---------------------------------------------------------------------------
 
 loc_D679:
-				call update_screen
+				;call update_screen
 
 				pop     ix
 				ret

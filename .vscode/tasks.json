@@ -1,0 +1,50 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "make (sjasmplus)",
+            "type": "shell",
+            "command": "${config:sjasmplus-dir}/sjasmplus.exe", // Please add the full path to sjasmplus
+            "args": [
+                "--sld=knightlore.sld",
+                "--fullpath",
+                "knightlore.asm"
+            ],
+            "problemMatcher": {
+                "owner": "sjasmplus",
+                "fileLocation": "autoDetect",
+                "pattern": {
+                    "regexp": "^(.*)\\((\\d+)\\):\\s+(warning|error):\\s+(.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "severity": 3,
+                    "message": 4
+                }
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+
+        {
+            "label": "start cspect",
+            "type": "shell",
+            "command": "CSpect.exe", // For windows users: Remove 'mono' and add 'CSpect.exe' instead
+            "args": [
+                //"-w4", // Window size
+                //"-zxnext", // Use zxnext HW registers
+                //"-mmc=./", // Enable RST 8, emulate SW card at director ./  (the trailing slash is important)
+                //"-tv", // Disable TV shader
+                //"-r", // Remember window settings
+                //"-debug", // Start up in (CSpect) debugger
+                "-s28",
+                "-remote"
+            ],
+            "isBackground": true,
+            "options": {
+                "cwd": "${config:cspect-dir}",
+            },
+        }
+    ]
+}
