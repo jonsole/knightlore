@@ -2364,94 +2364,6 @@ end_audio:
 ; End of function play_audio
 
 
-; =============== S U B R O U T I N E =======================================
-
-
-play_note:
-				and     0x3F ; '?'                             ; note
-				jr      Z, snd_delay
-				ld      l, a
-				ld      h, 0
-				add     hl, hl                                  ; HL=2A
-				call    add_HL_A                                ; HL=3A
-				ld      bc, freq_tbl                           ; frequency table
-				add     hl, bc                                  ; ptr to entry
-				ld      b, (hl)                                 ; loop cnt LSB
-				inc     hl
-				ld      c, (hl)                                 ; loop cnt MSB
-				inc     hl
-				ld      l, (hl)                                 ; duration LSB
-				ld      h, 0
-				ld      a, (de)                                 ; note & duration MSB
-				rlca
-				rlca
-				and     3
-				inc     a                                       ; duration MSB
-				push    de
-				ld      e, l
-				ld      d, h                                    ; HL,DE=duration LSB
-
-calc_duration:
-				dec     a
-				jr      Z, loc_B2FF
-				add     hl, de
-				jr      calc_duration                           ; calc 16-bit duration (HL)
-; ---------------------------------------------------------------------------
-
-loc_B2FF:
-				pop     de
-
-loc_B300:
-				push    bc
-				xor     a
-				out     (0xFE), a
-
-loc_B304:
-				djnz    loc_B304
-				dec     c
-				jr      NZ, loc_B304
-				pop     bc
-				push    bc
-				ld      a, 0x10
-				out     (0xFE), a
-
-loc_B30F:
-				djnz    loc_B30F
-				dec     c
-				jr      NZ, loc_B30F
-				pop     bc
-				dec     hl
-				ld      a, h
-				or      l
-				jr      NZ, loc_B300
-				inc     de
-				ret
-; ---------------------------------------------------------------------------
-
-snd_delay:
-				ld      a, (de)
-				inc     de
-				rlca
-				rlca
-				and     3
-				inc     a
-				ld      l, a
-				ld      bc, 0x430B
-
-loc_B327:
-				push    bc
-
-loc_B328:
-				dec     bc
-				ld      a, b
-				or      c
-				jr      NZ, loc_B328
-				pop     bc
-				dec     l
-				jr      NZ, loc_B327
-				ret
-; End of function play_note
-
 ;
 ; block (62)
 
@@ -2733,26 +2645,6 @@ toggle_audio_hw_xC:
 ; End of function toggle_audio_hw_x16
 
 
-; =============== S U B R O U T I N E =======================================
-
-
-toggle_audio_hw:
-				ld      a, 0x10                                ; EAR output
-				out     (0xFE), a                               ; enable
-				ld      a, b
-
-loc_B4F2:
-				djnz    loc_B4F2
-				ld      b, a
-				xor     a                                       ; MIC output
-				out     (0xFE), a                               ; enable (disable EAR)
-				ld      a, b
-
-loc_B4F9:
-				djnz    loc_B4F9
-				ld      b, a
-				ret
-; End of function toggle_audio_hw
 
 ; returns C flag set if any other object
 ; intersects with this one
@@ -8292,6 +8184,120 @@ loc_D8DC:		pop     de
 
 Copyright1984A_c_g_:
 				DC		'COPYRIGHT 1984 A.C.G.'
+
+
+; =============== S U B R O U T I N E =======================================
+
+
+toggle_audio_hw:
+				ld      a, 0x10                                ; EAR output
+				out     (0xFE), a                               ; enable
+				ld      a, b
+
+loc_B4F2:
+				djnz    loc_B4F2
+				ld      b, a
+				xor     a                                       ; MIC output
+				out     (0xFE), a                               ; enable (disable EAR)
+				ld      a, b
+
+loc_B4F9:
+				djnz    loc_B4F9
+				ld      b, a
+				ret
+; End of function toggle_audio_hw
+
+
+
+; =============== S U B R O U T I N E =======================================
+
+
+play_note:
+				and     0x3F ; '?'                             ; note
+				jr      Z, snd_delay
+				ld      l, a
+				ld      h, 0
+				add     hl, hl                                  ; HL=2A
+				call    add_HL_A                                ; HL=3A
+				ld      bc, freq_tbl                           ; frequency table
+				add     hl, bc                                  ; ptr to entry
+				ld      b, (hl)                                 ; loop cnt LSB
+				inc     hl
+				ld      c, (hl)                                 ; loop cnt MSB
+				inc     hl
+				ld      l, (hl)                                 ; duration LSB
+				ld      h, 0
+				ld      a, (de)                                 ; note & duration MSB
+				rlca
+				rlca
+				and     3
+				inc     a                                       ; duration MSB
+				push    de
+				ld      e, l
+				ld      d, h                                    ; HL,DE=duration LSB
+
+calc_duration:
+				dec     a
+				jr      Z, loc_B2FF
+				add     hl, de
+				jr      calc_duration                           ; calc 16-bit duration (HL)
+; ---------------------------------------------------------------------------
+
+loc_B2FF:
+				pop     de
+
+loc_B300:
+				push    bc
+				xor     a
+				out     (0xFE), a
+
+loc_B304:
+				djnz    loc_B304
+				dec     c
+				jr      NZ, loc_B304
+				pop     bc
+				push    bc
+				ld      a, 0x10
+				out     (0xFE), a
+
+loc_B30F:
+				djnz    loc_B30F
+				dec     c
+				jr      NZ, loc_B30F
+				pop     bc
+				dec     hl
+				ld      a, h
+				or      l
+				jr      NZ, loc_B300
+				inc     de
+				ret
+; ---------------------------------------------------------------------------
+
+snd_delay:
+				ld      a, (de)
+				inc     de
+				rlca
+				rlca
+				and     3
+				inc     a
+				ld      l, a
+				ld      bc, 0x430B
+
+loc_B327:
+				push    bc
+
+loc_B328:
+				dec     bc
+				ld      a, b
+				or      c
+				jr      NZ, loc_B328
+				pop     bc
+				dec     l
+				jr      NZ, loc_B327
+				ret
+; End of function play_note
+
+
 
 ; Pointers to Sprite Graphics
 sprite_tbl:     DW spr_nul, spr_nul, spr_071, spr_072, spr_023, spr_024
